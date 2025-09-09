@@ -3,25 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Buenos Aires — Mapa en Blanco y Negro</title>
-  <meta name="description" content="Mapa interactivo en blanco y negro de Buenos Aires (OpenStreetMap + Leaflet)." />
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
+  <title>Buenos Aires — Mapa B/N</title>
+  <meta name="description" content="Mapa interactivo en blanco y negro de Buenos Aires con OpenStreetMap y Leaflet." />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <style>
-    /* Diseño mínimo BN */
-    :root { --fg:#111; --bg:#fff; --line:#e6e6e6; }
+    /* Minimal blanco/negro */
+    :root { --fg:#111; --bg:#fff; --line:#e9e9e9; }
     *{box-sizing:border-box}
-    body{margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-         color:var(--fg); background:var(--bg)}
-    header{position:sticky; top:0; background:#fff; border-bottom:1px solid var(--line)}
+    body{margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--fg); background:var(--bg)}
+    header{position:sticky; top:0; background:var(--bg); border-bottom:1px solid var(--line)}
     .wrap{max-width:1000px; margin:0 auto; padding:14px 16px}
     h1{font-size:clamp(22px,4.2vw,32px); margin:6px 0}
-    #map{height:80vh; width:100%; border-top:1px solid var(--line)}
+    #map{height:80vh; width:100%; border-top:1px solid var(--line); filter: grayscale(1) contrast(1.05);}
     .foot{color:#666; font-size:12px; padding:10px 16px; border-top:1px solid var(--line)}
     a{color:inherit}
   </style>
@@ -39,38 +33,30 @@
   </main>
 
   <div class="foot">
-    Mapa © <a href="https://www.openstreetmap.org/copyright"
-              target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>,
-    teselas en B/N por <a href="https://stamen.com" target="_blank" rel="noopener">Stamen</a>,
-    con <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a>.
+    Datos © <a href="https://www.openstreetmap.org/copyright"
+               target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>.
+    Teselas por <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.
+    Mapa con <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a>.
   </div>
 
-  <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
-    // Coordenadas de Buenos Aires (centro aprox. Obelisco)
+    // Centro: Obelisco de Buenos Aires
     const BA = [-34.6037, -58.3816];
 
-    // Inicializa mapa
     const map = L.map('map', { zoomControl: true }).setView(BA, 12);
 
-    // Teselas blanco y negro (Stamen Toner Lite, BN)
-    const tiles = L.tileLayer(
-      'https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png',
-      {
-        attribution:
-          'Map tiles by <a href="https://stamen.com">Stamen</a>, ' +
-          '<a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a> — ' +
-          'Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 20
-      }
-    ).addTo(map);
+    // Basemap claro (se vuelve B/N con CSS filter)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> ' +
+        'contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20
+    }).addTo(map);
 
-    // Marcador opcional en el Obelisco
+    // Marcador opcional
     L.marker(BA).addTo(map).bindPopup('Buenos Aires').openPopup();
   </script>
 </body>
