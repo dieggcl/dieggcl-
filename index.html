@@ -1,63 +1,77 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Buenos Aires — Mapa B/N</title>
-  <meta name="description" content="Mapa interactivo en blanco y negro de Buenos Aires con OpenStreetMap y Leaflet." />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-  <style>
-    /* Minimal blanco/negro */
-    :root { --fg:#111; --bg:#fff; --line:#e9e9e9; }
-    *{box-sizing:border-box}
-    body{margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--fg); background:var(--bg)}
-    header{position:sticky; top:0; background:var(--bg); border-bottom:1px solid var(--line)}
-    .wrap{max-width:1000px; margin:0 auto; padding:14px 16px}
-    h1{font-size:clamp(22px,4.2vw,32px); margin:6px 0}
-    #map{height:80vh; width:100%; border-top:1px solid var(--line); filter: grayscale(1) contrast(1.05);}
-    .foot{color:#666; font-size:12px; padding:10px 16px; border-top:1px solid var(--line)}
-    a{color:inherit}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Buenos Aires — Mapa B/N</title>
+<meta name="description" content="Mapa interactivo en blanco y negro de Buenos Aires con OpenStreetMap y Leaflet." />
+<!-- Leaflet CSS (principal) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<!-- Fallback CSS (si el de arriba falla) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'">
+<style>
+  :root { --fg:#111; --bg:#fff; --line:#e9e9e9; }
+  *{box-sizing:border-box}
+  body{margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--fg); background:var(--bg)}
+  header{position:sticky; top:0; background:var(--bg); border-bottom:1px solid var(--line)}
+  .wrap{max-width:1000px; margin:0 auto; padding:14px 16px}
+  h1{font-size:clamp(22px,4.2vw,32px); margin:6px 0}
+  #map{height:80vh; width:100%; border-top:1px solid var(--line); filter:grayscale(1) contrast(1.05)}
+  .foot{color:#666; font-size:12px; padding:10px 16px; border-top:1px solid var(--line)}
+  a{color:inherit}
+</style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <h1>Buenos Aires — Mapa en Blanco y Negro</h1>
-      <p style="margin:0">OpenStreetMap + Leaflet · Interactivo</p>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <div id="map" role="region" aria-label="Mapa de Buenos Aires"></div>
-  </main>
-
-  <div class="foot">
-    Datos © <a href="https://www.openstreetmap.org/copyright"
-               target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>.
-    Teselas por <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.
-    Mapa con <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a>.
+<header>
+  <div class="wrap">
+    <h1>Buenos Aires — Mapa en Blanco y Negro</h1>
+    <p style="margin:0">OpenStreetMap + Leaflet · Interactivo</p>
   </div>
+</header>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script>
-    // Centro: Obelisco de Buenos Aires
-    const BA = [-34.6037, -58.3816];
+<main class="wrap">
+  <div id="map" role="region" aria-label="Mapa de Buenos Aires"></div>
+</main>
 
+<div class="foot">
+  Datos © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">
+  colaboradores de OpenStreetMap</a>. Teselas por <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>. 
+  Mapa con <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a>.
+</div>
+
+<!-- Leaflet JS (principal) -->
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+(function(){
+  const BA = [-34.6037, -58.3816];
+  function init(){
+    if(!window.L) return; // aún no cargó
     const map = L.map('map', { zoomControl: true }).setView(BA, 12);
-
-    // Basemap claro (se vuelve B/N con CSS filter)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> ' +
-        'contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 20
+      attribution: '&copy; OSM contributors &copy; CARTO', subdomains: 'abcd', maxZoom: 20
     }).addTo(map);
-
-    // Marcador opcional
     L.marker(BA).addTo(map).bindPopup('Buenos Aires').openPopup();
-  </script>
+  }
+  // Si Leaflet no cargó desde unpkg, cargamos fallback desde jsdelivr
+  function ensureLeafletThenInit(){
+    if (window.L) { init(); return; }
+    const fallback = document.createElement('script');
+    fallback.src = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js';
+    fallback.defer = true;
+    fallback.onload = init;
+    document.head.appendChild(fallback);
+  }
+  // Intentamos iniciar cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', () => {
+    // Espera breve por el script principal; si no, activa fallback
+    setTimeout(() => {
+      if (window.L) init(); else ensureLeafletThenInit();
+    }, 300);
+  });
+})();
+</script>
 </body>
 </html>
